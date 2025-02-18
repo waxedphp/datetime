@@ -41,7 +41,7 @@
         if (typeof that.dd.name == 'undefined') return;
         var rec = that.pluggable.getvar(that.dd.name, RECORD);
         if (typeof rec != 'object') { return; };
-        console.log('SETTING DATETIME', rec, typeof rec['value']);
+        //console.log('SETTING DATETIME', rec, typeof rec['value']);
         if (typeof rec['value'] == 'string') {
           var d = moment(rec['value']);
           that.picker.setDate(d.toDate());
@@ -75,7 +75,7 @@
       },
 
       this.init=function() {
-        console.log('FLATPICKR');
+        //console.log('FLATPICKR');
         this.cfg = {
           enableTime:true,
           //plugins: [new confirmDatePlugin({})],
@@ -109,7 +109,7 @@
           &&($.inArray(that.dd.datetimemode, ['single','multiple','range'])>-1)) {
           this.cfg.mode = that.dd.datetimemode;
         };
-        console.log('flatpickr',this.cfg);
+        //console.log('flatpickr',this.cfg);
         that.picker = $(that.element).flatpickr(this.cfg);
 
         if ($(that.element).hasClass('hidden')) {
