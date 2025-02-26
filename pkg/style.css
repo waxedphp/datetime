@@ -1,4 +1,16 @@
 
-.waxed-boilerplate {
+.flatpickr-time input.numInput {
+  height: 24px;
+  /*margin-top:0px;*/
+}
 
+.flatpickr-time input.numInput::-webkit-outer-spin-button,
+.flatpickr-time input.numInput::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+.flatpickr-time input.numInput[type=number] {
+  -moz-appearance: textfield;
 }

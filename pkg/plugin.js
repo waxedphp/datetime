@@ -17,7 +17,8 @@
             propertyName: "value"
         },
         inited = false,
-        _api = []
+        _api = [],
+        loadedTheme = null
         ;
 
 
@@ -31,7 +32,11 @@
       this.name = '';
       this.cfg = {
       };
-
+      this.theme = null;
+      this.allowedThemes = [
+        'airbnb','confetti','dark','light','material_blue','material_green','material_orange','material_red'
+      ];
+      
       this.invalidate = function(RECORD){
 
       },
@@ -42,9 +47,58 @@
         var rec = that.pluggable.getvar(that.dd.name, RECORD);
         if (typeof rec != 'object') { return; };
         //console.log('SETTING DATETIME', rec, typeof rec['value']);
+        if (typeof rec['config'] == 'object') {
+          var config = rec['config'];
+          if (typeof config.theme == 'string') {
+            that.setTheme(config.theme);
+          };
+          
+          var allowedOptions = ['altFormat', 'altInput', 'altInputClass', 'allowInput',
+          'allowInvalidPreload', 'ariaDateFormat', 'conjunction', 'clickOpens',
+          'dateFormat', 'defaultDate', 'defaultHour', 'defaultMinute',
+          'disableMobile', 'enableTime', 'enableSeconds', 'hourIncrement',
+          'inline', 'maxDate', 'minDate', 'minuteIncrement', 'mode', 'nextArrow',
+          'noCalendar', 'position', 'prevArrow', 'shorthandCurrentMonth', 'static',
+          'showMonths', 'time_24hr', 'weekNumbers', 'wrap', 'monthSelectorType'];
+          var changed = false;
+          for (var i=0;i<allowedOptions.length;i++) {
+            if (typeof config[allowedOptions[i]] != 'undefined') {
+              this.cfg[allowedOptions[i]] = config[allowedOptions[i]];
+              //that.picker.config[allowedOptions[i]] = config[allowedOptions[i]];
+              //that.picker.set(allowedOptions[i], config[allowedOptions[i]]);
+              //console.log(that.picker, allowedOptions[i], config[allowedOptions[i]]);
+              changed = true;
+            };
+          };
+          if (changed) {
+            //that.picker.init();
+            //that.picker.redraw();
+            //console.log(that.picker);
+            //that.free();
+            that.picker = $(that.element).flatpickr(that.cfg);
+          }
+          
+
+          if (typeof config.open == 'boolean') {
+            if (config.open) {
+              that.picker.open();
+            } else {
+              that.picker.close();
+            };
+          };
+
+          if (typeof config.enableDates == 'object') {
+            that.picker.set('enable', config.enableDates);
+          };
+          if (typeof config.disableDates == 'object') {
+            that.picker.set('disable', config.disableDates);
+          };          
+          
+        };
         if (typeof rec['value'] == 'string') {
           var d = moment(rec['value']);
           that.picker.setDate(d.toDate());
+          $(that.element).val(rec['value']);
         };
         if ((typeof rec['from'] == 'string')&&(typeof rec['to'] == 'string')) {
           var d1 = moment(rec['from']);
@@ -66,6 +120,16 @@
           that.picker.set('disable', rec['disableDates']);
         };
 
+      },
+      
+      this.setTheme = function(theme) {
+        //console.log(theme);
+        if (this.allowedThemes.includes(theme)) {
+          if (this.theme == theme) return;
+          if (loadedTheme) $(loadedTheme).remove();
+          this.theme = theme;      
+          loadedTheme = $('<link rel="stylesheet" type="text/css" href="/assets/flatpickr/themes/'+this.theme+'.css">').appendTo('head');
+        }
       },
 
 
